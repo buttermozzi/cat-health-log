@@ -112,32 +112,48 @@ export default function HomePage() {
   }
 
   async function togglePush() {
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      alert('이 브라우저는 푸시 알림을 지원하지 않아요.\niOS는 홈 화면에 추가 후 앱으로 실행해야 해요.')
+      return
+    }
     setPushLoading(true)
 
-    const reg = await navigator.serviceWorker.ready
+    try {
+      const reg = await navigator.serviceWorker.ready
 
-    if (pushEnabled) {
-      const sub = await reg.pushManager.getSubscription()
-      await sub?.unsubscribe()
-      await fetch('/api/push/subscribe', { method: 'DELETE' })
-      setPushEnabled(false)
-    } else {
-      const permission = await Notification.requestPermission()
-      if (permission !== 'granted') {
-        setPushLoading(false)
-        return
+      if (pushEnabled) {
+        const sub = await reg.pushManager.getSubscription()
+        await sub?.unsubscribe()
+        await fetch('/api/push/subscribe', { method: 'DELETE' })
+        setPushEnabled(false)
+      } else {
+        const permission = await Notification.requestPermission()
+        if (permission === 'denied') {
+          alert('알림이 차단되어 있어요. 기기 설정에서 알림을 허용해주세요.')
+          setPushLoading(false)
+          return
+        }
+        if (permission !== 'granted') {
+          setPushLoading(false)
+          return
+        }
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+        })
+        const res = await fetch('/api/push/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(sub),
+        })
+        if (res.ok) {
+          setPushEnabled(true)
+        } else {
+          alert('알림 등록에 실패했어요. 다시 시도해주세요.')
+        }
       }
-      const sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-      })
-      await fetch('/api/push/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(sub),
-      })
-      setPushEnabled(true)
+    } catch (err) {
+      alert(`오류가 발생했어요: ${err instanceof Error ? err.message : String(err)}`)
     }
 
     setPushLoading(false)
