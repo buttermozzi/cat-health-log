@@ -44,7 +44,6 @@ export default function LoginPage() {
       return
     }
 
-    // 고양이 등록 여부 확인
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
