@@ -28,7 +28,7 @@ export default function LoginPage() {
   }
 
   async function verifyOtp() {
-    if (otp.length !== 6) return
+    if (otp.length < 6) return
     setLoading(true)
     setError('')
 
@@ -67,7 +67,7 @@ export default function LoginPage() {
           <p className="text-sm text-gray-500">
             {step === 'email'
               ? '이메일을 입력하면 인증코드를 보내드려요'
-              : `${email}로 보낸 6자리 코드를 입력해주세요`}
+              : `${email}로 보낸 인증코드를 입력해주세요`}
           </p>
         </div>
 
@@ -95,16 +95,16 @@ export default function LoginPage() {
             <input
               type="text"
               value={otp}
-              onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 8))}
               onKeyDown={e => e.key === 'Enter' && verifyOtp()}
-              placeholder="6자리 코드"
+              placeholder="인증 코드"
               inputMode="numeric"
               autoFocus
               className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-center tracking-[0.5em] focus:outline-none focus:border-emerald-400"
             />
             <button
               onClick={verifyOtp}
-              disabled={otp.length !== 6 || loading}
+              disabled={otp.length < 6 || loading}
               className="w-full py-4 rounded-xl bg-emerald-500 text-white font-semibold text-sm disabled:opacity-40 transition-all"
             >
               {loading ? '확인 중...' : '로그인'}
