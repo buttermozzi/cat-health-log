@@ -27,15 +27,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ sent: 0 })
   }
 
-  // KST = UTC+9 / 아침 8시 = UTC 23시, 저녁 9시 = UTC 12시
+  // KST = UTC+9 / 아침 8시 = UTC 23시, 오후 5시반 = UTC 8시30분, 저녁 9시 = UTC 12시
   const utcHour = new Date().getUTCHours()
-  const isMorning = utcHour === 23
+  const utcMinute = new Date().getUTCMinutes()
+  const body =
+    utcHour === 23 ? '오늘 하루도 잘 부탁해요 🌞 기록 잊지 마세요!' :
+    utcHour === 8 && utcMinute >= 30 ? '오후에도 잘 지내고 있나요? ☀️ 기록해줘요!' :
+                     '오늘 기록 하셨나요? 🌙'
 
   const payload = JSON.stringify({
     title: '고양이 건강일지',
-    body: isMorning
-      ? '오늘 하루도 잘 부탁해요 🌞 기록 잊지 마세요!'
-      : '오늘 기록 하셨나요? 🌙',
+    body,
     url: '/',
   })
 
