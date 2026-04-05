@@ -78,10 +78,18 @@ records (
   - app/login/page.tsx — 이메일 → OTP 2단계 로그인
   - app/onboarding/page.tsx — 첫 로그인 후 고양이 이름 등록
 - [x] RLS 활성화 (cats, records)
+- [x] PWA 설정 + 푸시 알림
+  - app/manifest.ts — PWA 매니페스트
+  - public/sw.js — 서비스 워커 (push 수신 + 알림 클릭)
+  - app/api/push/subscribe/route.ts — 구독 저장/해제
+  - app/api/cron/notify/route.ts — Vercel Cron 알림 발송 (아침 8시 · 저녁 9시 KST)
+  - vercel.json — Cron 스케줄 설정
+  - iOS: Safari → 홈 화면 추가 후 PWA 모드에서 작동 (iOS 16.4+)
+- [x] Vercel 배포 — https://cat-health-log-chi.vercel.app
 
 ### 다음 작업 (순서대로)
-1. PWA 설정 + 푸시 알림
-2. Vercel 배포
+1. 4주차: 백로그 · 스프린트 · MVP 배포 준비
+2. 5주차: 파일럿 테스트 · GA 분석
 
 ---
 
@@ -123,8 +131,8 @@ records (
 |------|------|------|
 | 1주차 | 문제정의 · 유저리서치 · PRD | ✅ 완료 |
 | 2주차 | User Flow · 와이어프레임 | ✅ 완료 |
-| 3주차 | 가설 · 매트릭스 · 개발 · Auth · RLS | ✅ 완료 |
-| 4주차 | 백로그 · 스프린트 · MVP 배포 | 예정 |
+| 3주차 | 가설 · 매트릭스 · 개발 · Auth · RLS · PWA · 배포 | ✅ 완료 |
+| 4주차 | 백로그 · 스프린트 · MVP 배포 | 🔄 진행중 |
 | 5주차 | 파일럿 테스트 · GA 분석 | 예정 |
 | 6주차 | A/B 테스트 설계 · 1차 개선 | 예정 |
 | 7주차 | 경쟁 서비스 분석 · 2차 개선 | 예정 |

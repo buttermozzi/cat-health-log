@@ -111,6 +111,13 @@ export default function HomePage() {
     router.push('/login')
   }
 
+  function urlBase64ToUint8Array(base64String: string) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+    const rawData = atob(base64)
+    return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)))
+  }
+
   async function togglePush() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
       alert('이 브라우저는 푸시 알림을 지원하지 않아요.\niOS는 홈 화면에 추가 후 앱으로 실행해야 해요.')
@@ -139,7 +146,7 @@ export default function HomePage() {
         }
         const sub = await reg.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+          applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
         })
         const res = await fetch('/api/push/subscribe', {
           method: 'POST',
