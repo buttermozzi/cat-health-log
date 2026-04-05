@@ -2,15 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/notify",
-      "schedule": "0 23 * * *"
-    },
-    {
-      "path": "/api/cron/notify",
-      "schedule": "30 8 * * *"
-    },
-    {
-      "path": "/api/cron/notify",
-      "schedule": "0 12 * * *"
+      "schedule": "30 13 * * *"
     }
   ]
 }
